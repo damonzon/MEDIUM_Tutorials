@@ -1,0 +1,71 @@
+---
+title: "Central Limit Theorem"
+author: "Patrick Kelly"
+date: "2/12/2020"
+output: html_document
+---
+
+# Central Limit Theorem
+
+You’re Not a Data Scientist If You Don’t Know The Central Limit Theorem
+
+
+[Click Here](https://towardsdatascience.com/understanding-the-central-limit-theorem-42286a6fbd80)"Central Limit Theorem"
+
+```{r}
+data <- mtcars
+hist(data$mpg)
+```
+
+\pagebreak
+
+```{r}
+# Test for normality
+# H0 = distribution is normal
+# HA = distribution is not normal
+shapiro.test(data$mpg)
+# If p-value>0.05, H0 is not rejected.
+round(mean(data$mpg),2)
+```
+
+### Normal Distribution (Gaussian/Bell Curve)
+
+```{r}
+# Create dataset with mean=0 and standard deviation = 1
+n <- 100
+Mean <- 0
+Standard_Deviation <- 1
+data2 <- rnorm(n,Mean,Standard_Deviation)
+hist(data2)
+round(mean(data2))
+round(sd(data2))
+shapiro.test(data2)
+# If p-value>0.05, H0 is not rejected.
+```
+
+```{r}
+n <- 100
+mpg_samples <- c()
+for (i in 1:n) { 
+    mpg_samples[i] = mean(sample(data$mpg, 10, replace = TRUE))
+} 
+class(mpg_samples)
+hist(mpg_samples, col = 'lightgrey', xlab = "MPG")
+m <- round(mean(mpg_samples),2)
+std <- round(sd(mpg_samples),2)
+st_error <- std/sqrt(n)
+ci_ll <- m-1.96*st_error
+ci_ul <- m+1.96*st_error
+abline(v=round(m,2),col="blue")
+abline(v=round(ci_ll,2),col="red")
+abline(v=round(ci_ul,2),col="red")
+shapiro.test(mpg_samples)
+# If p-value>0.05, H0 is not rejected.
+cat("Mean of the 100 samples =",m)
+cat("Lower limit of the 95% confidence interval =",round(ci_ll,2))
+cat("Upper limit of the 95% confidence interval =",round(ci_ul,2))
+```
+
+Blue line = mean of the 100 samples
+
+Red lines = Lower and upper limits of the 95% confidence interval around the mean.
